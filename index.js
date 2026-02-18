@@ -1,176 +1,285 @@
-const express=require('express');
-const app=express();
+const express = require('express');
+const app = express();
 require('./src/config/db');
 require('dotenv').config();
-const user=require('./src/models/usermodel');
-const PORT=process.env.PORT | 5000;
+const user = require('./src/models/usermodel');
+const PORT = process.env.PORT | 5000;
 app.use(express.json());
-app.use('/ecomapp',user);
+app.use('/ecomapp', user);
 
 app.get("/", (req, res) => {
-  res.send(`
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bajrang Prajapati | Portfolio</title>
+    return res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bajrang Prajapati | Futuristic Portfolio</title>
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', sans-serif;
-      }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
 
-      body {
-        background: linear-gradient(135deg, #1f1c2c, #928dab);
-        color: white;
-        scroll-behavior: smooth;
-      }
+body{
+  background: #0f0c29;
+  background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  color:white;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+}
 
-      header {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
+/* Animated Background Glow */
+body::before{
+  content:"";
+  position:fixed;
+  width:600px;
+  height:600px;
+  background:radial-gradient(circle,#00f7ff,transparent);
+  top:-200px;
+  left:-200px;
+  animation:moveGlow 8s infinite alternate;
+  opacity:0.4;
+  z-index:-1;
+}
 
-      h1 {
-        font-size: 50px;
-        animation: fadeDown 1.5s ease;
-      }
+@keyframes moveGlow{
+  from{transform:translate(0,0);}
+  to{transform:translate(300px,200px);}
+}
 
-      h2 {
-        margin-top: 15px;
-        font-weight: 300;
-        animation: fadeUp 2s ease;
-      }
+/* Navbar */
+nav{
+  position:fixed;
+  width:100%;
+  top:0;
+  padding:15px 30px;
+  display:flex;
+  justify-content:space-between;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
 
-      .btn {
-        margin-top: 30px;
-        padding: 12px 30px;
-        border-radius: 30px;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        background: white;
-        color: #1f1c2c;
-        transition: 0.3s;
-      }
+nav a{
+  color:#00f7ff;
+  text-decoration:none;
+  margin-left:20px;
+  font-weight:bold;
+  transition:0.3s;
+}
 
-      .btn:hover {
-        transform: scale(1.1);
-        background: #00ffcc;
-      }
+nav a:hover{
+  color:#fff;
+}
 
-      section {
-        padding: 80px 20px;
-        text-align: center;
-      }
+/* Hero Section */
+header{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding-top:60px;
+}
 
-      .skills-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 40px;
-      }
+h1{
+  font-size:55px;
+  background: linear-gradient(90deg,#00f7ff,#ff00c8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
-      .skill-card {
-        background: rgba(255,255,255,0.1);
-        padding: 25px;
-        border-radius: 15px;
-        width: 200px;
-        transition: 0.3s;
-        backdrop-filter: blur(10px);
-      }
+.typing{
+  margin-top:15px;
+  font-size:20px;
+  color:#00f7ff;
+  min-height:25px;
+}
 
-      .skill-card:hover {
-        transform: translateY(-10px);
-        background: rgba(255,255,255,0.2);
-      }
+/* Buttons */
+.btn{
+  margin-top:25px;
+  padding:12px 30px;
+  border-radius:30px;
+  border:1px solid #00f7ff;
+  background:transparent;
+  color:#00f7ff;
+  cursor:pointer;
+  transition:0.3s;
+}
 
-      footer {
-        padding: 20px;
-        text-align: center;
-        background: rgba(0,0,0,0.4);
-      }
+.btn:hover{
+  background:#00f7ff;
+  color:#000;
+  box-shadow:0 0 20px #00f7ff;
+}
 
-      @keyframes fadeDown {
-        from {opacity:0; transform:translateY(-40px);}
-        to {opacity:1; transform:translateY(0);}
-      }
+/* Sections */
+section{
+  padding:80px 20px;
+  text-align:center;
+}
 
-      @keyframes fadeUp {
-        from {opacity:0; transform:translateY(40px);}
-        to {opacity:1; transform:translateY(0);}
-      }
+.section-title{
+  font-size:35px;
+  margin-bottom:40px;
+  color:#00f7ff;
+}
 
-      @media(max-width: 768px){
-        h1 { font-size: 35px; }
-        .skill-card { width: 150px; }
-      }
-    </style>
-  </head>
+/* Skills Grid */
+.skills{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:25px;
+  max-width:900px;
+  margin:auto;
+}
 
-  <body>
+.skill-card{
+  padding:25px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(15px);
+  transition:0.3s;
+  border:1px solid rgba(0,247,255,0.3);
+}
 
-    <header>
-      <h1>Bajrang Prajapati</h1>
-      <h2>Full Stack Flutter Developer | 1 Year Experience</h2>
-      <button class="btn" onclick="scrollToSkills()">View My Skills</button>
-    </header>
+.skill-card:hover{
+  transform:translateY(-10px) scale(1.05);
+  box-shadow:0 0 20px #00f7ff;
+}
 
-    <section id="skills">
-      <h1>My Skills</h1>
-      <div class="skills-container">
-        <div class="skill-card">Flutter</div>
-        <div class="skill-card">Node.js</div>
-        <div class="skill-card">Firebase</div>
-        <div class="skill-card">AI</div>
-        <div class="skill-card">Machine Learning</div>
-        <div class="skill-card">Blockchain</div>
-      </div>
-    </section>
+/* Contact */
+.contact-box{
+  background:rgba(255,255,255,0.05);
+  padding:30px;
+  border-radius:15px;
+  max-width:500px;
+  margin:auto;
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(0,247,255,0.3);
+}
 
-    <section>
-      <h1>About Me</h1>
-      <p style="max-width:700px; margin:20px auto; line-height:1.6;">
-        I am a passionate Full Stack Flutter Developer with approximately 1 year of experience 
-        building scalable mobile applications and backend systems. 
-        I specialize in Flutter app development, Node.js backend architecture, 
-        Firebase integration, and emerging technologies like AI, Machine Learning, and Blockchain.
-      </p>
-    </section>
+.contact-box p{
+  margin:10px 0;
+  cursor:pointer;
+}
 
-    <section>
-      <h1>Contact</h1>
-      <button class="btn" onclick="contactMe()">Hire Me</button>
-    </section>
+.contact-box p:hover{
+  color:#00f7ff;
+}
 
-    <footer>
-      © 2026 Bajrang Prajapati | All Rights Reserved
-    </footer>
+/* Footer */
+footer{
+  padding:20px;
+  text-align:center;
+  background:rgba(0,0,0,0.4);
+  margin-top:40px;
+}
 
-    <script>
-      function scrollToSkills() {
-        document.getElementById("skills").scrollIntoView();
-      }
+@media(max-width:768px){
+  h1{font-size:38px;}
+}
+</style>
+</head>
 
-      function contactMe() {
-        alert("Thank you for your interest! Contact me at: bajrang@email.com");
-      }
-    </script>
+<body>
 
-  </body>
-  </html>
-  `);
+<nav>
+  <div><b>Bajrang.dev</b></div>
+  <div>
+    <a href="#skills">Skills</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<header>
+  <h1>Bajrang Prajapati</h1>
+  <div class="typing" id="typing"></div>
+  <button class="btn" onclick="scrollToSection('skills')">Explore My Work</button>
+</header>
+
+<section id="skills">
+  <div class="section-title">My Skills</div>
+  <div class="skills">
+    <div class="skill-card">Flutter</div>
+    <div class="skill-card">Node.js</div>
+    <div class="skill-card">Firebase</div>
+    <div class="skill-card">AI</div>
+    <div class="skill-card">Machine Learning</div>
+    <div class="skill-card">Blockchain</div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-title">About Me</div>
+  <p style="max-width:800px;margin:auto;line-height:1.7;">
+    Full Stack Flutter Developer with approximately 1 year of experience building scalable
+    mobile applications and backend systems. Passionate about AI, ML, and Blockchain innovations.
+    I build high-performance apps with modern UI and powerful backend architecture.
+  </p>
+</section>
+
+<section id="contact">
+  <div class="section-title">Contact Me</div>
+  <div class="contact-box">
+    <p onclick="copyEmail()">📧 prajapatbaju37@gmail.com (Click to Copy)</p>
+    <p onclick="callMe()">📱 +91 9680462099 (Click to Call)</p>
+    <button class="btn" onclick="hireMe()">Hire Me</button>
+  </div>
+</section>
+
+<footer>
+  © 2026 Bajrang Prajapati | All Rights Reserved
+</footer>
+
+<script>
+const roles = ["Full Stack Flutter Developer","AI Enthusiast","Backend Architect","Blockchain Explorer"];
+let i=0, j=0, current="", isDeleting=false;
+
+function type(){
+  current = roles[i];
+  if(!isDeleting){
+    document.getElementById("typing").innerText = current.substring(0,j++);
+    if(j>current.length){ isDeleting=true; setTimeout(type,1000); return;}
+  }else{
+    document.getElementById("typing").innerText = current.substring(0,j--);
+    if(j<0){ isDeleting=false; i=(i+1)%roles.length;}
+  }
+  setTimeout(type,100);
+}
+type();
+
+function scrollToSection(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function copyEmail(){
+  navigator.clipboard.writeText("prajapatbaju37@gmail.com");
+  alert("Email Copied ✅");
+}
+
+function callMe(){
+  window.location.href="tel:+919680462099";
+}
+
+function hireMe(){
+  alert("Let's Build Something Amazing Together 🚀");
+}
+</script>
+
+</body>
+</html>
+`);
 });
 
-app.listen(PORT,()=>{
+
+app.listen(PORT, () => {
     console.log(`Server is Running on PORT=${PORT}`);
 });
